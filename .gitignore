@@ -1,0 +1,12 @@
+.env
+.env.local
+.env.*
+/go.mod
+/go.sum
+.idea/
+.vscode/
+*.swp
+
+# Go binary files
+/bin/
+/obj/
