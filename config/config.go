@@ -30,7 +30,7 @@ func LoadConfig() {
 		DBPort:      getEnv("DB_PORT", "5432"),
 		DBUser:      getEnv("DB_USER", "postgres"),
 		DBPassword:  getEnv("DB_PASSWORD", "password"),
-		DBName:      getEnv("DB_NAME", "Multi-Tenant-Tystem"),
+		DBName:      getEnv("DB_NAME", "Multi-Tenant-System"),
 		Port:        getEnv("PORT", "8000"),
 	}
 }
