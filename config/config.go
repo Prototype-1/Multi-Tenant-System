@@ -3,17 +3,19 @@ package config
 import (
 	"log"
 	"os"
+	"strings"
+
 	"github.com/joho/godotenv"
 )
 
 type Config struct {
-	JWTSecret   string
-	DBHost      string
-	DBPort      string
-	DBUser      string
-	DBPassword  string
-	DBName      string
-	Port        string
+	JWTSecret  string
+	DBHost     string
+	DBPort     string
+	DBUser     string
+	DBPassword string
+	DBName     string
+	Port       string
 }
 
 var AppConfig Config
@@ -25,13 +27,13 @@ func LoadConfig() {
 	}
 
 	AppConfig = Config{
-		JWTSecret:   getEnv("JWT_SECRET", ""),
-		DBHost:      getEnv("DB_HOST", "localhost"),
-		DBPort:      getEnv("DB_PORT", "5432"),
-		DBUser:      getEnv("DB_USER", "postgres"),
-		DBPassword:  getEnv("DB_PASSWORD", "password"),
-		DBName:      getEnv("DB_NAME", "Multi-Tenant-System"),
-		Port:        getEnv("PORT", "8000"),
+		JWTSecret:  getEnv("JWT_SECRET", ""),
+		DBHost:     getEnv("DB_HOST", "localhost"),
+		DBPort:     getEnv("DB_PORT", "5432"),
+		DBUser:     getEnv("DB_USER", "postgres"),
+		DBPassword: getEnv("DB_PASSWORD", "password"),
+		DBName:     getEnv("DB_NAME", "multi_tenant_system"), 
+		Port:       getEnv("PORT", "8000"),
 	}
 }
 
@@ -40,5 +42,5 @@ func getEnv(key string, fallback string) string {
 	if !exists {
 		return fallback
 	}
-	return value
+	return strings.TrimSpace(value)
 }
