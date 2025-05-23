@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 	"github.com/Prototype-1/Multi-Tenant-System/internal/dto"
 	"github.com/Prototype-1/Multi-Tenant-System/internal/model"
 	"github.com/Prototype-1/Multi-Tenant-System/internal/repository"
@@ -19,17 +20,37 @@ type UserUsecase interface {
 
 type userUsecase struct {
 	userRepo repository.UserRepository
+	tenantRepo repository.TenantRepository
 }
 
-func NewUserUsecase(userRepo repository.UserRepository) UserUsecase {
-	return &userUsecase{userRepo}
+func NewUserUsecase(userRepo repository.UserRepository, tenantRepo repository.TenantRepository) UserUsecase {
+	return &userUsecase{
+		userRepo,
+		tenantRepo,
+	}
 }
 
 func (u *userUsecase) Signup(req dto.SignupRequest) error {
+
+	if req.TenantID == "" {
+        return errors.New("tenant ID is required")
+    }
+
 	tenantUUID, err := uuid.Parse(req.TenantID)
 	if err != nil {
 		return errors.New("invalid tenant ID")
 	}
+
+   tenant, err := u.tenantRepo.GetTenantByID(tenantUUID.String())
+    if err != nil {
+        if errors.Is(err, gorm.ErrRecordNotFound) {
+            return errors.New("tenant not found")
+        }
+        return errors.New("failed to validate tenant")
+    }
+    if tenant == nil {
+        return errors.New("tenant not found")
+    }
 
 	existingUser, err := u.userRepo.FindByEmail(req.Email)
 	if err != nil {

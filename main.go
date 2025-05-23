@@ -22,7 +22,7 @@ func main() {
 	tenantRepo := repository.NewTenantRepository(db)
 	locationRepo := repository.NewLocationRepository(db)
 
-	userUsecase := usecase.NewUserUsecase(userRepo)
+	userUsecase := usecase.NewUserUsecase(userRepo, tenantRepo)
 	tenantUsecase := usecase.NewTenantUsecase(tenantRepo)
 	locationUsecase := usecase.NewLocationUsecase(locationRepo)
 

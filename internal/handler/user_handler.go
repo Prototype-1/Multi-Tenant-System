@@ -43,8 +43,11 @@ func (h *UserHandler) Login(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
-
-	c.JSON(http.StatusOK, gin.H{"token": token})
+	c.JSON(http.StatusOK, gin.H{
+    "message": "Login successful",
+    "token":   token,
+    "status":  "success",
+})
 }
 
 func (h *UserHandler) GetUsersHandler(c *gin.Context) {
