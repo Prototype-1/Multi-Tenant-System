@@ -12,6 +12,12 @@ type LocationHandler struct {
 	locationUsecase usecase.LocationUsecase
 }
 
+func NewLocationHandler(usecase usecase.LocationUsecase) *LocationHandler {
+	return &LocationHandler{
+		locationUsecase: usecase,
+	}
+}
+
 type CreateLocationRequest struct {
 	Latitude  float64 `json:"latitude" binding:"required"`
 	Longitude float64 `json:"longitude" binding:"required"`
