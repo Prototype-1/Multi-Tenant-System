@@ -13,7 +13,6 @@ type Location struct {
 	Latitude  float64   `gorm:"not null" json:"latitude"`
 	Longitude float64   `gorm:"not null" json:"longitude"`
 	Timestamp time.Time `gorm:"autoCreateTime" json:"timestamp"`
-
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
