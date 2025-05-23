@@ -2,9 +2,9 @@ package pkg
 
 import (
 	"errors"
+	"time"
 	"github.com/Prototype-1/Multi-Tenant-System/config"
 	"github.com/golang-jwt/jwt/v4"
-	"time"
 )
 
 func getSecretKey() []byte {
@@ -12,17 +12,19 @@ func getSecretKey() []byte {
 }
 
 type Claims struct {
-	UserID string `json:"user_id"`
-	Role string `json:"role"`
+	UserID   string `json:"user_id"`
+	TenantID string `json:"tenant_id"`
+	Role     string `json:"role"`
 	jwt.RegisteredClaims
 }
 
-func GenerateAccessToken(userID string, role string) (string, error) {
+func GenerateAccessToken(userID, tenantID, role string) (string, error) {
 	claims := Claims{
-		UserID: userID,
-		Role: role,
+		UserID:   userID,
+		TenantID: tenantID,
+		Role:     role,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)), 
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 			Subject:   userID,
 		},
@@ -38,10 +40,8 @@ func ParseAccessToken(tokenString string) (*Claims, error) {
 	})
 
 	if err != nil {
-		if ve, ok := err.(*jwt.ValidationError); ok {
-			if ve.Errors&jwt.ValidationErrorExpired != 0 {
-				return nil, errors.New("token expired")
-			}
+		if ve, ok := err.(*jwt.ValidationError); ok && ve.Errors&jwt.ValidationErrorExpired != 0 {
+			return nil, errors.New("token expired")
 		}
 		return nil, errors.New("invalid token")
 	}
