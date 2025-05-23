@@ -13,6 +13,7 @@ type User struct {
 	Email     string    `gorm:"uniqueIndex;not null" json:"email"`
 	Password  string    `gorm:"not null" json:"-"`
 	Role      string    `gorm:"type:varchar(10);not null" json:"role"` 
+	Locations []Location `gorm:"foreignKey:UserID" json:"locations,omitempty"` 
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }

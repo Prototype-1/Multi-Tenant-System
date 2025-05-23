@@ -11,6 +11,7 @@ type UserRepository interface {
 	Create(user *model.User) error
 	FindByEmail(email string) (*model.User, error)
 	CountAdminsByTenant(tenantID uuid.UUID) (int64, error)
+	FindUsersByTenant(tenantID uuid.UUID) ([]model.User, error) 
 }
 
 type userRepository struct {
@@ -39,3 +40,12 @@ func (r *userRepository) CountAdminsByTenant(tenantID uuid.UUID) (int64, error) 
 	err := r.db.Model(&model.User{}).Where("tenant_id = ? AND role = ?", tenantID, "admin").Count(&count).Error
 	return count, err
 }
+
+func (r *userRepository) FindUsersByTenant(tenantID uuid.UUID) ([]model.User, error) {
+	var users []model.User
+	if err := r.db.Preload("Locations").Where("tenant_id = ?", tenantID).Find(&users).Error; err != nil {
+		return nil, err
+	}
+	return users, nil
+}
+

@@ -13,6 +13,7 @@ import (
 type UserUsecase interface {
 	Signup(req dto.SignupRequest) error
 	Login(req dto.LoginRequest) (string, error)
+	GetUsersByTenant(tenantID uuid.UUID) ([]model.User, error) 
 }
 
 type userUsecase struct {
@@ -84,3 +85,8 @@ func (u *userUsecase) Login(req dto.LoginRequest) (string, error) {
     }
     return token, nil
 }
+
+func (u *userUsecase) GetUsersByTenant(tenantID uuid.UUID) ([]model.User, error) {
+	return u.userRepo.FindUsersByTenant(tenantID)
+}
+
