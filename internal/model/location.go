@@ -12,7 +12,6 @@ type Location struct {
 	TenantID  uuid.UUID `gorm:"type:uuid;index" json:"tenant_id"`
 	Latitude  float64   `gorm:"not null" json:"latitude"`
 	Longitude float64   `gorm:"not null" json:"longitude"`
-	Timestamp time.Time `gorm:"autoCreateTime" json:"timestamp"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
