@@ -29,6 +29,13 @@ func (u *userUsecase) Signup(req dto.SignupRequest) error {
 		return errors.New("invalid tenant ID")
 	}
 
+	existingUser, err := u.userRepo.FindByEmail(req.Email)
+	if err != nil {
+		return err
+	}
+	if existingUser != nil {
+		return errors.New("email is already registered")
+	}
 	if req.Role == "admin" {
 		count, err := u.userRepo.CountAdminsByTenant(tenantUUID)
 		if err != nil {
