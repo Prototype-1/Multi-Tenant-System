@@ -28,7 +28,7 @@ func (h *UserHandler) Signup(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"message": "user created"})
+	c.JSON(http.StatusCreated, gin.H{"message": "Registration successful, please log in"})
 }
 
 func (h *UserHandler) Login(c *gin.Context) {
@@ -50,7 +50,7 @@ func (h *UserHandler) Login(c *gin.Context) {
 func (h *UserHandler) GetUsersHandler(c *gin.Context) {
 	tenantIDStr, exists := c.Get("tenant_id")
 	if !exists {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Missing tenant ID"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Please provide the  tenant ID"})
 		return
 	}
 
@@ -68,4 +68,22 @@ func (h *UserHandler) GetUsersHandler(c *gin.Context) {
 
 	c.JSON(http.StatusOK, users)
 }
+
+func (h *UserHandler) GetCurrentUser(c *gin.Context) {
+	userID, ok := c.Get("user_id")
+	if !ok {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User ID incorrect or missing"})
+		return
+	}
+	uid := userID.(uuid.UUID)
+
+	user, err := h.userUsecase.GetMeByID(uid)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch user data"})
+		return
+	}
+
+	c.JSON(http.StatusOK, user)
+}
+
 

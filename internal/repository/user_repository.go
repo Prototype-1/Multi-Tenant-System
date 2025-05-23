@@ -12,6 +12,7 @@ type UserRepository interface {
 	FindByEmail(email string) (*model.User, error)
 	CountAdminsByTenant(tenantID uuid.UUID) (int64, error)
 	FindUsersByTenant(tenantID uuid.UUID) ([]model.User, error) 
+	GetMeById(userID uuid.UUID) (*model.User, error)
 }
 
 type userRepository struct {
@@ -49,3 +50,10 @@ func (r *userRepository) FindUsersByTenant(tenantID uuid.UUID) ([]model.User, er
 	return users, nil
 }
 
+func (r *userRepository) GetMeById(userID uuid.UUID) (*model.User, error) {
+	var user model.User
+	if err := r.db.Preload("Locations").Where("id = ?", userID).First(&user).Error; err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
