@@ -9,8 +9,6 @@ import (
 type Tenant struct {
 	ID          uuid.UUID `gorm:"type:uuid;primaryKey" json:"id"`
 	Name        string    `gorm:"uniqueIndex;not null" json:"name"`
-	Description string    `json:"description"`
-
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
