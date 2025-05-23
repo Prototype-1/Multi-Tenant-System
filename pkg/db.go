@@ -39,6 +39,7 @@ func AutoMigrate(db *gorm.DB, models ...interface{}) error {
         models = []interface{}{
             &model.User{},
             &model.Location{},
+			&model.Tenant{},
         }
         log.Println("Using default models for AutoMigrate")
     }
