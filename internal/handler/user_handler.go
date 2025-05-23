@@ -50,7 +50,7 @@ func (h *UserHandler) Login(c *gin.Context) {
 func (h *UserHandler) GetUsersHandler(c *gin.Context) {
 	tenantIDStr, exists := c.Get("tenant_id")
 	if !exists {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Please provide the  tenant ID"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Please provide a valid tenant ID"})
 		return
 	}
 
