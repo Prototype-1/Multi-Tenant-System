@@ -72,21 +72,47 @@ func (h *UserHandler) GetUsersHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, users)
 }
 
-func (h *UserHandler) GetCurrentUser(c *gin.Context) {
-	userID, ok := c.Get("user_id")
-	if !ok {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "User ID incorrect or missing"})
-		return
-	}
-	uid := userID.(uuid.UUID)
-
-	user, err := h.userUsecase.GetMeByID(uid)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch user data"})
-		return
-	}
-
-	c.JSON(http.StatusOK, user)
+func (h *UserHandler) GetMe(c *gin.Context) {
+    userID, ok := c.Get("user_id")
+    if !ok {
+        c.JSON(http.StatusUnauthorized, gin.H{"error": "User ID incorrect or missing"})
+        return
+    }
+    
+    userIDStr := userID.(string)  
+    uid, err := uuid.Parse(userIDStr)
+    if err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid user ID format"})
+        return
+    }
+    
+    user, err := h.userUsecase.GetMeByID(uid)
+    if err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch user data"})
+        return
+    }
+    
+  var locationResponses []dto.LocationResponse
+    for _, loc := range user.Locations {
+        locationResponses = append(locationResponses, dto.LocationResponse{
+            ID:        loc.ID,
+            Latitude:  loc.Latitude,
+            Longitude: loc.Longitude,
+            CreatedAt: loc.CreatedAt,
+            UpdatedAt: loc.UpdatedAt,
+        })
+    }
+    
+    response := dto.UserMeResponse{
+        ID:        user.ID,
+        TenantID:  user.TenantID,
+        Email:     user.Email,
+        Role:      user.Role,
+        Locations: locationResponses,
+        CreatedAt: user.CreatedAt,
+        UpdatedAt: user.UpdatedAt,
+    }
+    
+    c.JSON(http.StatusOK, response)
 }
-
 

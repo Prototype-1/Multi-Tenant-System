@@ -22,7 +22,7 @@ func SetupRouter(
 	userRoutes.GET("", userHandler.GetUsersHandler)
 
 	r.POST("/locations", middleware.AuthMiddleware(), middleware.AuthorizeRole("user"), locationHandler.CreateLocation)
-	r.GET("/me", middleware.AuthMiddleware(), middleware.AuthorizeRole("user"), userHandler.GetCurrentUser)
+	r.GET("/me", middleware.AuthMiddleware(), middleware.AuthorizeRole("user"), userHandler.GetMe)
 
 	return r
 }
