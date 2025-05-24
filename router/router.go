@@ -12,17 +12,17 @@ func SetupRouter(
 	tenantHandler *handler.TenantHandler,
 ) *gin.Engine {
 	r := gin.Default()
-	r.POST("/tenants", tenantHandler.CreateTenant)
+	r.POST("/create/tenants", tenantHandler.CreateTenant)
 
 	r.POST("/users/signup", userHandler.Signup)
 	r.POST("/users/login", userHandler.Login)
 
-	userRoutes := r.Group("/users")
+	userRoutes := r.Group("/get/users")
 	userRoutes.Use(middleware.AuthMiddleware(), middleware.AuthorizeRole("admin"))
 	userRoutes.GET("", userHandler.GetUsersHandler)
 
-	r.POST("/locations", middleware.AuthMiddleware(), middleware.AuthorizeRole("user"), locationHandler.CreateLocation)
-	r.GET("/me", middleware.AuthMiddleware(), middleware.AuthorizeRole("user"), userHandler.GetMe)
+	r.POST("/create/locations", middleware.AuthMiddleware(), middleware.AuthorizeRole("user"), locationHandler.CreateLocation)
+	r.GET("/get/me", middleware.AuthMiddleware(), middleware.AuthorizeRole("user"), userHandler.GetMe)
 
 	return r
 }
