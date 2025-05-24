@@ -9,6 +9,8 @@ This is a backend service for managing users and their locations in a multi-tena
 ### Prerequisites
 
 - Go (v1.20+)
+- Gin
+- GORM
 - PostgreSQL
 - Make sure the following environment variables are set:
   - `DB_URL`
@@ -29,7 +31,6 @@ docker run --name postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=yourpa
 ### Start the Server
 
 go run main.go
-
 
 
 ### API Endpoints
