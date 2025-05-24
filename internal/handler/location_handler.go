@@ -1,6 +1,9 @@
 package handler
 
 import (
+	"os"
+	"fmt"
+	"time"
 	"net/http"
 	"strings"
 	"github.com/google/uuid"
@@ -67,6 +70,15 @@ func (h *LocationHandler) CreateLocation(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save location"})
 		return
 	}
+
+f, err := os.OpenFile("location_stream.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+if err == nil {
+	defer f.Close()
+	logLine := fmt.Sprintf("User %s submitted location (Lat: %.6f, Lon: %.6f) at %s\n",
+		location.UserID, location.Latitude, location.Longitude, location.CreatedAt.Format(time.RFC3339))
+	f.WriteString(logLine)
+}
+
 	   c.JSON(http.StatusCreated, gin.H{
         "message": "Location saved successfully",
         "location": location,
